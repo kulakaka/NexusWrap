@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Transaction Page</title>
+    <!-- Add your styling here -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        label, input, button, p {
+            margin-top: 10px;
+        }
+        input {
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #005f73;
+        }
+        h1 {
+            color: #333;
+        }
+        #addressDisplay {
+            color: #555;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="walletAddress">Enter your wallet address:</label>
+        <input type="text" id="walletAddress" name="walletAddress" placeholder="0x...">
+    
+        <button id="displayButton">Display Your Balance</button>
+        <p id="addressDisplay"></p>
+
+    </div>
+    <div class="container">
+        <label for="crypto-select">Choose a cryptocurrency:</label>
+<select id="crypto-select" name="cryptocurrency">
+    <option value="">--Please choose an option--</option>
+    <option value="BTC">Bitcoin (BTC)</option>
+    <option value="ETH">Ethereum (ETH)</option>
+    <option value="BNB">Binance Coin (BNB)</option>
+    <option value="USDT">Tether (USDT)</option>
+    <option value="SOL">Solana (SOL)</option>
+    <option value="ADA">Cardano (ADA)</option>
+    <option value="XRP">Ripple (XRP)</option>
+    <option value="DOT">Polkadot (DOT)</option>
+    <option value="DOGE">Dogecoin (DOGE)</option>
+    <option value="AVAX">Avalanche (AVAX)</option>
+</select>
+<p id="conversion-display">Select a cryptocurrency to see the conversion.</p>
+
+
+    </div>
+    <div class="container">
+        
+        <h3>Make a Transaction</h3>
+        <button id="transactButton">Confirm</button>
+    </div>
+
+   
+</body>
+</html>
