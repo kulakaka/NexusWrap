@@ -1,0 +1,5 @@
+packages:
+  - 'packages/*'
+  - 'localenv/mock-account-servicing-entity'
+  # exclude packages that are inside test directories
+  - '!**/test/**'
