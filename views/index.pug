@@ -1,0 +1,88 @@
+html
+  head
+    meta(charset="utf-8")
+    script(defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous")
+    script(src='https://d3js.org/d3.v2.min.js?2.9.3')
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous")
+    link(rel="manifest" href="/pay/manifest.json")
+    |<style>
+    include dashboard.css
+    |</style>
+    script(src="/index.js")
+  body
+    nav.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0
+      a.navbar-brand.col-sm-3.col-md-2.mr-0.d-inline-flex.p-2.justify-content-between(href="/")
+        span.p-1
+          span NexusWrap
+        span.p-1#network
+      input.form-control.form-control-dark.w-100(type="text" placeholder="Search" aria-label="Search")
+      ul.navbar-nav.px-3
+        li.nav-item.text-nowrap
+          a.nav-link(onclick="reload_view()") Refresh
+    .container-fluid
+      .row
+        nav.col-md-2.d-none.d-md-block.bg-light.sidebar
+          .sidebar-sticky
+            h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted Actions
+            ul.nav.flex-column
+              <!--li.nav-item
+                a.nav-link(onclick="load_view('ping')")
+                  span.fas.fa-map-pin
+                  span &nbsp; Ping-->
+              li.nav-item
+                a.nav-link(onclick="load_view('send')")
+                  span.fas.fa-dollar-sign
+                  span &nbsp; Send
+              li.nav-item
+                a.nav-link(onclick="load_view('receive')")
+                  span.fas.fa-piggy-bank
+                  span &nbsp; Receive
+              li.nav-item
+                a#rates.nav-link(onclick="load_view('swap')")
+                  span.fas.fa-sync
+                  span &nbsp; Swap
+              li.nav-item
+                a.nav-link(onclick="load_view('walletConfig')")
+                  span.fas.fa-wallet
+                  span &nbsp; Wallet Config
+                <!--a.nav-link(onclick="load_view('modify_balance')")
+                  span.fas.fa-balance-scale
+                  span &nbsp; Update balance
+                a.nav-link(onclick="load_view('plugin_admin')")
+                  span.fas.fa-eye
+                  span &nbsp; Plugin Admin-->
+            h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted Information
+            ul.nav.flex-column
+              li.nav-item
+                a#status.nav-link(onclick="load_view('status')")
+                  span.fas.fa-chart-pie
+                  span &nbsp; Status
+              li.nav-item
+                a#graph.nav-link(onclick="load_view('graph')")
+                  span.fas.fa-code-branch
+                  span &nbsp; Network Graph
+              li.nav-item
+                a#routing.nav-link(onclick="load_view('routing')")
+                  span.fas.fa-table
+                  span &nbsp; Routing Table
+              <!--li.nav-item
+                a#accounts.nav-link(onclick="load_view('accounts')")
+                  span.fas.fa-plug
+                  span &nbsp; Plugin Info -->
+              <!--li.nav-item
+                a#balance.nav-link(onclick="load_view('balance')")
+                  span.fas.fa-users
+                  span &nbsp; Peer Balances -->
+              li.nav-item
+                a#rates.nav-link(onclick="load_view('rates')")
+                  span.fas.fa-sync
+                  span &nbsp; Exchange Rates
+              <!-- li.nav-item
+                a#stats.nav-link(onclick="load_view('stats')")
+                  span.fas.fa-chart-bar
+                  span &nbsp; Statistics
+              li.nav-item
+                a#stats.nav-link(onclick="load_view('alerts')")
+                  span.fas.fa-exclamation-triangle
+                  span &nbsp; Alerts -->
+        main#main.col-md-9.ml-sm-auto.col-lg-10.pt-3.px-4(role="main")
