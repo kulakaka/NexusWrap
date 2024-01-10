@@ -1,0 +1,32 @@
+{
+  "name": "mock-account-servicing-entity",
+  "sideEffects": false,
+  "scripts": {
+    "build": "remix build",
+    "dev": "PORT=3300 remix dev",
+    "start": "remix-serve build"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.8.8",
+    "@interledger/http-signature-utils": "2.0.0",
+    "@remix-run/node": "^1.19.3",
+    "@remix-run/react": "^1.19.3",
+    "@remix-run/serve": "^1.19.3",
+    "@types/node": "^18.7.12",
+    "@types/uuid": "^9.0.7",
+    "axios": "^1.6.5",
+    "graphql": "^16.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "uuid": "^9.0.1",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.19.3",
+    "@types/react": "^18.2.47",
+    "@types/react-dom": "^18.2.18"
+  },
+  "engines": {
+    "node": "18"
+  }
+}

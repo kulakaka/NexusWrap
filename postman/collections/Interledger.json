@@ -1,0 +1,3080 @@
+{
+	"info": {
+		"_postman_id": "92761441-6d0c-4fc6-aa04-73eccf6afd4c",
+		"name": "Interledger",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "23674746-92761441-6d0c-4fc6-aa04-73eccf6afd4c"
+	},
+	"item": [
+		{
+			"name": "Rafiki Admin APIs",
+			"item": [
+				{
+					"name": "Create Asset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"assetId\", body.data.createAsset.asset.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateAsset($input: CreateAssetInput!) {\n  createAsset(input: $input) {\n    asset {\n      code\n      createdAt\n      id\n      scale\n      withdrawalThreshold\n      liquidityThreshold\n    }\n    code\n    message\n    success\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"code\": \"USD\",\n    \"scale\": 6,\n    \"withdrawalThreshold\": null,\n    \"liquidityThreshold\": \"100000000\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Asset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateAsset($input: UpdateAssetInput!) {\n  updateAsset(input: $input) {\n    asset {\n      code\n      createdAt\n      id\n      scale\n      withdrawalThreshold\n      liquidityThreshold\n    }\n    code\n    message\n    success\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"{{assetId}}\",\n    \"withdrawalThreshold\": 100,\n    \"liquidityThreshold\": 100\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Asset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetAsset($id: String!) {\n    asset(id: $id) {\n    code\n    createdAt\n    id\n    scale\n    withdrawalThreshold\n    liquidityThreshold\n    sendingFee {\n        id\n        type\n        basisPoints\n        fixed\n    }\n    receivingFee {\n        id\n        type\n        basisPoints\n        fixed\n    }\n  }\n}",
+								"variables": "{\n    \"id\": \"{{assetId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Assets",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetAssets($after: String, $before: String, $first: Int, $last: Int) {\n    assets(after: $after, before: $before, first:$first, last: $last) {\n        edges {\n            cursor\n            node {\n                code\n                createdAt\n                id\n                scale\n                withdrawalThreshold\n                liquidityThreshold\n                liquidity\n                sendingFee {\n                    id\n                    type\n                    basisPoints\n                    fixed\n                }\n                receivingFee {\n                    id\n                    type\n                    basisPoints\n                    fixed\n                }\n            }\n        }\n        pageInfo {\n            endCursor\n            hasNextPage\n            hasPreviousPage\n            startCursor\n        }\n    }\n}",
+								"variables": "{\n  \"after\": null,\n  \"before\": null,\n  \"first\": null,\n  \"last\": null\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Asset Liquidity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation AddAssetLiquidity ($input: AddAssetLiquidityInput!) {\n  addAssetLiquidity(input: $input) {\n    code\n    success\n    message\n    error\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"3615a385-4c7e-43ec-9d66-f5d2e421108a\",\n    \"assetId\": \"{{assetId}}\",\n    \"amount\": \"1000000\",\n    \"idempotencyKey\":\"{{$guid}}\"\n  }\n}\n"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw Asset Liquidity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateAssetLiquidityWithdrawal ($input: CreateAssetLiquidityWithdrawalInput!) {\n  createAssetLiquidityWithdrawal(input: $input) {\n    code\n    success\n    message\n    error\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"b97fd85a-126e-42ef-b40d-1a50a70ffa6f\",\n    \"assetId\": \"{{assetId}}\",\n    \"amount\": \"100\",\n    \"idempotencyKey\":\"{{$guid}}\"\n  }\n}\n"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Fee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation SetFee($input: SetFeeInput!) {\n    setFee(input: $input) {\n        code\n        success\n        message\n        fee {\n            id\n            assetId\n            type\n            fixed\n            basisPoints\n            createdAt\n        }\n    }\n}",
+								"variables": "{\n    \"input\": {\n        \"assetId\": \"{{assetId}}\",\n        \"type\": \"SENDING\",\n        \"fee\": {\n          \"fixed\": 100,\n          \"basisPoints\": 100\n        }\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Peer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"peerId\", body.data.createPeer.peer.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreatePeer ($input: CreatePeerInput!) {\n    createPeer (input: $input) {\n        code\n        message\n        success\n        peer {\n            id\n            name\n            liquidity\n            liquidityThreshold\n            asset{\n                id\n                scale\n                code\n                withdrawalThreshold\n            }\n        }\n    }\n}",
+								"variables": "{\n  \"input\": {\n    \"name\": \"Wallet1\",\n    \"staticIlpAddress\": \"test.peer\",\n    \"http\": {\n      \"incoming\": {\"authTokens\": [\"test123abc\"]},\n      \"outgoing\": {\"endpoint\": \"http://peer-backend:3002\", \"authToken\": \"test123abc\"}\n    },\n    \"assetId\": \"{{assetId}}\",\n    \"maxPacketAmount\": 1000,\n    \"liquidityThreshold\": 100000000,\n    \"initialLiquidity\": 200000000\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Or Update Peer By Url",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"peerId\", body.data.createOrUpdatePeerByUrl.peer.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateOrUpdatePeerByUrl ($input: CreateOrUpdatePeerByUrlInput!) {\n    createOrUpdatePeerByUrl (input: $input) {\n        code\n        message\n        success\n        peer {\n            id\n            name\n            asset {\n                id\n                scale\n                code\n                withdrawalThreshold\n            }\n        }\n    }\n}",
+								"variables": "{\n  \"input\": {\n    \"peerUrl\": \"http://happy-life-bank-backend:3005\",\n    \"assetId\": \"{{assetId}}\",\n    \"addedLiquidity\": 100000\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Peer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdatePeer ($input: UpdatePeerInput!){  \n  updatePeer(input: $input) {\n    code\n    success\n    message\n    peer {\n      id\n      name\n      http {\n        outgoing {\n          authToken\n          endpoint\n        }\n      }\n      liquidity\n      liquidityThreshold\n    }\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"{{peerId}}\",\n    \"name\": \"Wall-y\",\n    \"http\": {\n      \"incoming\": {\"authTokens\": [\"test-123\"]},\n      \"outgoing\": {\"endpoint\": \"http://peer-backend:3002\", \"authToken\": \"test\"}\n    },\n    \"maxPacketAmount\": 1000,\n    \"liquidityThreshold\": 100\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Peer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetPeer {\n  peer (id: \"{{peerId}}\") {\n    id\n    name\n    http {\n      outgoing {\n        authToken\n        endpoint\n      }\n    }\n    liquidity\n    liquidityThreshold\n  }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Peers",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetPeers {\n    peers {\n        edges {\n            cursor\n            node {\n                id\n                name\n                asset {\n                    code\n                    scale\n                }\n                liquidity\n                liquidityThreshold\n                staticIlpAddress\n                http {\n                    outgoing {\n                        authToken\n                        endpoint\n                    }\n                }\n            }\n        }\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Peer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation DeletePeer($input: DeletePeerInput!) {\n  deletePeer(input: $input) {\n    code\n    message\n    success\n  }\n}\n",
+								"variables": "{\n    \"input\": {\n        \"id\": \"{{peerId}}\"\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Peer Liquidity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation AddPeerLiquidity ($input: AddPeerLiquidityInput!) {\n  addPeerLiquidity(input: $input) {\n    code\n    success\n    message\n    error\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"a09b730d-8610-4fda-98fa-ec7acb19c775\",\n    \"peerId\": \"{{peerId}}\",\n    \"amount\": \"1000000\",\n    \"idempotencyKey\":\"{{$guid}}\"\n  }\n}\n"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw Peer Liquidity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreatePeerLiquidityWithdrawal ($input: CreatePeerLiquidityWithdrawalInput!) {\n  createPeerLiquidityWithdrawal(input: $input) {\n    code\n    success\n    message\n    error\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"421fae87-9a59-4217-9ff8-faf55ffab9c6\",\n    \"peerId\": \"{{peerId}}\",\n    \"amount\": \"100\",\n    \"idempotencyKey\":\"{{$guid}}\"\n  }\n}\n"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Liquidity Withdrawal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation PostLiquidityWithdrawal($input: PostLiquidityWithdrawalInput!) {\n  postLiquidityWithdrawal(input: $input) {\n    code\n    error\n    message\n    success\n  }\n}",
+								"variables": "{\n    \"input\": {\n        \"withdrawalId\": \"421fae87-9a59-4217-9ff8-faf55ffab9c6\",\n        \"idempotencyKey\":\"{{$guid}}\"\n    }\n}\n"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Void Liquidity Withdrawal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation VoidLiquidityWithdrawal($input: VoidLiquidityWithdrawalInput!) {\n  voidLiquidityWithdrawal(input: $input) {\n    code\n    error\n    message\n    success\n  }\n}",
+								"variables": "{\n    \"input\": {\n        \"withdrawalId\": \"421fae87-9a59-4217-9ff8-faf55ffab9c6\",\n        \"idempotencyKey\":\"{{$guid}}\"\n    }\n}\n"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Wallet Address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"walletAddressId\", body.data.createWalletAddress.walletAddress.id);",
+									"pm.expect(pm.environment.get(\"walletAddressId\")).to.be.a('string');",
+									"",
+									"pm.environment.set(\"walletAddressUrl\", body.data.createWalletAddress.walletAddress.url);",
+									"pm.expect(pm.environment.get(\"walletAddressUrl\")).to.be.a('string');",
+									"",
+									"pm.environment.set(\"createWalletAddressRequest\", pm.request);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateWalletAddres($input: CreateWalletAddressInput!) {\n  createWalletAddress(input: $input) {\n    code\n    success\n    message\n    walletAddress {\n      id\n      createdAt\n      publicName\n      url\n      status\n      asset {\n        code\n        createdAt\n        id\n        scale\n        withdrawalThreshold\n      }\n    }\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"assetId\": \"{{assetId}}\",\n    \"url\": \"https://{{senderOpenPaymentsHost}}/timon/{{$randomInt}}\",\n    \"publicName\": \"Timon\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Wallet Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateWalletAddress($input: UpdateWalletAddressInput!) {\n    updateWalletAddress(input: $input) {\n        code\n        message\n        walletAddress {\n            id\n            asset {\n                id\n                code\n                scale\n                withdrawalThreshold\n                createdAt\n            }\n            url\n            publicName\n            createdAt\n            status\n        }\n        success\n    }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"{{walletAddressId}}\",\n    \"publicName\": \"New Name\",\n    \"status\": \"ACTIVE\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Wallet Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetWalletAddress($id: String!) {\n    walletAddress(id: $id) {\n        id\n        asset {\n            id\n            code\n            scale\n            withdrawalThreshold\n            createdAt\n        }\n        createdAt\n        incomingPayments {\n            edges {\n                node {\n                    id\n                    state\n                    incomingAmount {\n                        value\n                    }\n                    receivedAmount {\n                        value\n                    }\n                }\n                cursor\n            }\n            pageInfo {\n                endCursor\n                hasNextPage\n                hasPreviousPage\n                startCursor\n            }\n        }\n        status\n    }\n}",
+								"variables": "{\n    \"id\": \"{{walletAddressId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Wallet Addresses",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetWalletAddresses {\n    walletAddresses {\n        edges {\n            cursor\n            node {\n                id\n                publicName\n                url\n            }\n        }\n    }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Wallet Address Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"walletAddressKeyId\", body.data.createWalletAddressKey.walletAddressKey.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateWalletAddressKey ($input: CreateWalletAddressKeyInput!) {\n    createWalletAddressKey(input: $input) {\n        code\n        message\n        success\n        walletAddressKey {\n            id\n            revoked\n            walletAddressId\n            createdAt\n            jwk {\n                alg\n                crv\n                kid\n                kty\n                x\n            }\n        }\n    }\n}",
+								"variables": "{\n    \"input\": {\n        \"walletAddressId\": \"{{walletAddressId}}\",\n        \"jwk\": {\n            \"alg\": \"EdDSA\",\n            \"crv\": \"Ed25519\",\n            \"kid\": \"kid_dad93e7f-f40b-484d-99d2-df12c8523176\",\n            \"kty\": \"OKP\", \n            \"x\": \"ubqoInifJ5sssIPPnQR1gVPfmoZnJtPhTkyMXNoJF_8\"\n        }\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Wallet Address Key",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation RevokeWalletAddressKey ($input: RevokeWalletAddressKeyInput!) {\n    revokeWalletAddressKey (input: $input) {\n        code\n        message\n        success\n        walletAddressKey {\n            id\n            revoked\n            walletAddressId\n            createdAt\n        }\n    }\n}",
+								"variables": "{\n    \"input\": {\n        \"id\": \"{{walletAddressKeyId}}\"\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Incoming Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"incomingPaymentId\", body.data.createIncomingPayment.payment.id);",
+									"pm.expect(pm.environment.get(\"incomingPaymentId\")).to.be.a('string');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateIncomingPayment ($input: CreateIncomingPaymentInput!) {\n    createIncomingPayment(input: $input) {\n    code\n    message\n    payment {\n      createdAt\n      expiresAt\n      metadata\n      id\n      incomingAmount {\n        assetCode\n        assetScale\n        value\n      }\n      walletAddressId\n      receivedAmount {\n        assetCode\n        assetScale\n        value\n      }\n      state\n    }\n    success\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"expiresAt\": null,\n    \"metadata\": {\n        \"externalRef\": null, \n        \"description\": \"Hello World\"\n    },\n    \"incomingAmount\": null,\n    \"walletAddressId\": \"{{walletAddressId}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Incoming Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetIncomingPayment($id: String!) {\nincomingPayment(id: $id) {\n    id\n    walletAddressId\n    state\n    expiresAt\n    incomingAmount {\n        value\n        assetCode\n        assetScale\n    }\n    receivedAmount {\n        value\n        assetCode\n        assetScale\n    }\n    metadata\n    createdAt\n  }\n}",
+								"variables": "{\n    \"id\": \"{{incomingPaymentId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Receiver (remote Incoming Payment)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateReceiver($input: CreateReceiverInput!) {\n  createReceiver(input: $input) {\n    code\n    message\n    receiver {\n      completed\n      createdAt\n      expiresAt\n      metadata\n      id\n      incomingAmount {\n        assetCode\n        assetScale\n        value\n      }\n      walletAddressUrl\n      receivedAmount {\n        assetCode\n        assetScale\n        value\n      }\n      updatedAt\n    }\n    success\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"expiresAt\": null,\n    \"metadata\": {\n        \"description\": \"Hello my friend\",\n        \"externalRef\": null\n    },\n    \"incomingAmount\": {\n      \"assetCode\": \"USD\",\n      \"assetScale\": 2,\n      \"value\": 100\n    },\n    \"walletAddressUrl\": \"https://happy-life-bank-backend/accounts/pfry\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Quote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"quoteId\", body.data.createQuote.quote.id);",
+									"pm.expect(pm.environment.get(\"quoteId\")).to.be.a('string');"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Create an additional wallet address to represent the account that will be sending money",
+									"",
+									"// Reset the uniqueWalletAddress value",
+									"pm.environment.set(\"uniqueWalletAddress\", Math.floor(Math.random() * (1001)));",
+									"",
+									"const initialRequest = pm.environment.get(\"createWalletAddressRequest\");",
+									"",
+									"const postRequest = {",
+									"  url: initialRequest.url,",
+									"  method: initialRequest.method,",
+									"  body: {",
+									"    mode: 'graphql',",
+									"    graphql: {",
+									"        query: initialRequest.body.graphql.query,",
+									"        variables: JSON.stringify({",
+									"            \"input\": {",
+									"                \"assetId\": pm.environment.get(\"assetId\"),",
+									"                \"url\": \"https://\" + pm.environment.get(\"OpenPaymentsHost\") + \"/simon/\" + pm.environment.get(\"uniqueWalletAddress\"),",
+									"                \"publicName\": \"Simon\"",
+									"            }",
+									"        })",
+									"    }",
+									"  }",
+									"};",
+									"",
+									"pm.sendRequest(postRequest, (error, response) => {",
+									"    if (error) {",
+									"        console.log(error);",
+									"    }",
+									"    const body = response.json();",
+									"    pm.test('response should be okay to process', () => {",
+									"        pm.expect(error).to.equal(null);",
+									"        pm.expect(body.data.createWalletAddress.code).to.equal('200');",
+									"        pm.expect(body.data.createWalletAddress.success).to.equal(true);",
+									"    });",
+									"    pm.environment.set(\"secondWalletAddressId\", body.data.createWalletAddress.walletAddress.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateQuote($input: CreateQuoteInput!) {\n  createQuote(input: $input) {\n    code\n    message\n    quote {\n      createdAt\n      expiresAt\n      highEstimatedExchangeRate\n      id\n      lowEstimatedExchangeRate\n      maxPacketAmount\n      minExchangeRate\n      walletAddressId\n      receiveAmount {\n        assetCode\n        assetScale\n        value\n      }\n      receiver\n      debitAmount {\n        assetCode\n        assetScale\n        value\n      }\n    }\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"walletAddressId\": \"{{secondWalletAddressId}}\",\n    \"receiveAmount\": null,\n    \"receiver\": \"{{receiverOpenPaymentsHost}}/incoming-payments/{{incomingPaymentId}}\",\n    \"debitAmount\": {\n      \"assetCode\": \"USD\",\n      \"assetScale\": 6,\n      \"value\": 5000000\n    }\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Quote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetQuote($id: String!) {\n    quote(id: $id) {\n        createdAt\n        highEstimatedExchangeRate\n        expiresAt\n        id\n        lowEstimatedExchangeRate\n        maxPacketAmount\n        minExchangeRate\n        walletAddressId\n        receiveAmount {\n            assetCode\n            assetScale\n            value\n        }\n        receiver\n        debitAmount {\n            assetCode\n            assetScale\n            value\n        }\n    }\n}",
+								"variables": "{\n    \"id\": \"{{quoteId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Outgoing Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();",
+									"",
+									"pm.environment.set(\"outgoingPaymentId\", body.data.createOutgoingPayment.payment.id);",
+									"pm.expect(pm.environment.get(\"outgoingPaymentId\")).to.be.a('string');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateOutgoingPayment($input: CreateOutgoingPaymentInput!) {\n  createOutgoingPayment(input: $input) {\n    code\n    message\n    payment {\n      createdAt\n      error\n      metadata\n      id\n      walletAddressId\n      quote {\n        createdAt\n        expiresAt\n        highEstimatedExchangeRate\n        id\n        lowEstimatedExchangeRate\n        maxPacketAmount\n        minExchangeRate\n        walletAddressId\n        receiveAmount {\n          assetCode\n          assetScale\n          value\n        }\n        receiver\n        debitAmount {\n          assetCode\n          assetScale\n          value\n        }\n      }\n      receiveAmount {\n        assetCode\n        assetScale\n        value\n      }\n      receiver\n      debitAmount {\n        assetCode\n        assetScale\n        value\n      }\n      sentAmount {\n        assetCode\n        assetScale\n        value\n      }\n      state\n      stateAttempts\n    }\n    success\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"metadata\": {\n        \"description\": null,\n        \"externalRef\": null\n    },\n    \"walletAddressId\": \"{{secondWalletAddressId}}\",\n    \"quoteId\": \"{{quoteId}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Outgoing Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetOutgoingPayment($id: String!) {\noutgoingPayment(id: $id) {\n    createdAt\n    error\n    metadata\n    id\n    walletAddressId\n    quote {\n      createdAt\n      expiresAt\n      highEstimatedExchangeRate\n      id\n      lowEstimatedExchangeRate\n      maxPacketAmount\n      minExchangeRate\n      walletAddressId\n      receiveAmount {\n        assetCode\n        assetScale\n        value\n      }\n      receiver\n      debitAmount {\n        assetCode\n        assetScale\n        value\n      }\n    }\n    receiveAmount {\n      assetCode\n      assetScale\n      value\n    }\n    receiver\n    debitAmount {\n      assetCode\n      assetScale\n      value\n    }\n    sentAmount {\n      assetCode\n      assetScale\n      value\n    }\n    state\n    stateAttempts\n  }\n}",
+								"variables": "{\n    \"id\": \"{{outgoingPaymentId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payments",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Payments($filter: PaymentFilter) {\n    payments(filter: $filter) {\n        edges {\n        node {\n            id\n            type\n            walletAddressId\n            state\n            metadata\n            createdAt\n        }\n        cursor\n        }\n    }\n}",
+								"variables": "{          \n    \"filter\": {\n        \"type\": {\n            \"in\": [\"OUTGOING\"]\n        },\n        \"walletAddressId\": {\n           \"in\": [\"{{secondWalletAddressId}}\"]\n        }\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deposit Event Liquidity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation DepositEventLiquidity($input: DepositEventLiquidityInput!) {\n  depositEventLiquidity(input: $input) {\n    code\n    error\n    message\n    success\n  }\n}",
+								"variables": "{\n    \"input\": {\n        \"eventId\": \"b4f85d5c-652d-472d-873c-4ba2a5e39052\",\n        \"idempotencyKey\":\"{{$guid}}\"\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw Event Liquidity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation WithdrawEventLiquidity($input: WithdrawEventLiquidityInput!) {\n  withdrawEventLiquidity(input: $input) {\n    code\n    error\n    message\n    success\n  }\n}",
+								"variables": "{\n    \"input\": {\n        \"eventId\": \"b4f85d5c-652d-472d-873c-4ba2a5e39052\",\n        \"idempotencyKey\":\"{{$guid}}\"\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Wallet Address Withdrawal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateWalletAddressWithdrawal($input: CreateWalletAddressWithdrawalInput!) {\n  createWalletAddressWithdrawal(input: $input) {\n    code\n    error\n    message\n    success\n    withdrawal {\n      amount\n      id\n      walletAddress {\n        id\n        url\n        asset {\n          id\n          code\n          scale\n          withdrawalThreshold\n        }\n      }\n    }\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"id\": \"02ac56f7-ae5d-4abb-8306-17bf2327b43c\",\n    \"walletAddressId\": \"{{walletAddressId}}\",\n    \"idempotencyKey\":\"{{$guid}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trigger Wallet Address Events",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation TriggerWalletAddressEvents($input: TriggerWalletAddressEventsInput!) {\n  triggerWalletAddressEvents(input: $input) {\n    code\n    count\n    message\n    success\n  }\n}",
+								"variables": "{\n    \"input\": {\n        \"limit\": 5\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Webhook Events",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query WebhookEvents($after: String, $before: String, $first: Int, $last: Int, $filter: WebhookEventFilter) {\n  webhookEvents(after: $after, before: $before, first:$first, last: $last, filter: $filter) {\n    edges {\n      cursor\n      node {\n        createdAt\n        data\n        id\n        type\n      }\n    }\n  }\n}",
+								"variables": "{\n    \"filter\": {\n        \"type\": { \n            \"in\": []\n        }\n    },\n    \"after\": null,\n    \"before\": null,\n    \"first\": null,\n    \"last\": null\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Receiver (remote incoming payment) Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "\nquery GetReceiver($id: String!) {\n    receiver(id: $id) {\n        id\n        walletAddressUrl\n        completed\n        expiresAt\n        incomingAmount {\n            value\n            assetCode\n            assetScale\n        }\n        receivedAmount {\n            value\n            assetCode\n            assetScale\n        }\n        metadata\n        createdAt\n        updatedAt\n    }\n}",
+								"variables": "{\n    \"id\": \"{{receiverId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rafiki Admin Auth APIs",
+			"item": [
+				{
+					"name": "Get Grant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Grant($id: ID!) {\n    grant(id: $id) {\n        id\n        state\n        createdAt\n        client\n        access {\n            type\n            actions\n            createdAt\n            id\n            identifier\n            limits {\n                interval\n                receiveAmount {\n                    assetCode\n                    assetScale\n                    value\n                }\n                receiver\n                debitAmount {\n                    assetCode\n                    assetScale\n                    value\n                }\n            }\n        }\n    }\n}",
+								"variables": "{\n    \"id\": \"056b3f93-7890-4005-9b24-2623d9cedab5\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiAuthGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiAuthGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Grants",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Grants($after: String, $before: String, $first: Int, $last: Int, $filter: GrantFilter) {\n    grants(after: $after, before: $before, first: $first, last: $last, filter: $filter) {\n        edges {\n            cursor\n            node {\n                access {\n                    createdAt\n                    id\n                    identifier\n                    limits {\n                        interval\n                        receiveAmount {\n                            assetScale\n                            value\n                            assetCode\n                        }\n                        receiver\n                        debitAmount {\n                            assetCode\n                            assetScale\n                            value\n                        }\n                    }\n                    actions\n                    type\n                }\n                client\n                createdAt\n                id\n                state\n            }\n        }\n        pageInfo {\n            endCursor\n            hasNextPage\n            hasPreviousPage\n            startCursor\n        }\n    }\n}\n",
+								"variables": "{\n    \"after\": null,\n    \"before\": null,\n    \"first\": null,\n    \"last\": null,\n    \"filter\": {\n        \"state\": {\n            \"in\": [\"PROCESSING\", \"PENDING\", \"APPROVED\", \"FINALIZED\"]\n        },\n        \"finalizationReason\": {\n            \"notIn\": [\"REVOKED\"]\n        }\n    }\n}\n"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiAuthGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiAuthGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Grant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation revokeGrant($input: RevokeGrantInput!) {\n    revokeGrant(input: $input) {\n        code\n        message\n        success\n    }\n}",
+								"variables": "{\n    \"input\": {\n        \"grantId\": \"e6684d05-6cc5-4a0e-a490-7ed05923fa89\"\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{RafikiAuthGraphqlHost}}/graphql",
+							"host": [
+								"{{RafikiAuthGraphqlHost}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Open Payments APIs",
+			"item": [
+				{
+					"name": "Wallet Address",
+					"item": [
+						{
+							"name": "Get a Wallet Address",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"receiverAssetCode\", body?.assetCode)",
+											"pm.environment.set(\"receiverAssetScale\", body?.assetScale)",
+											"",
+											"const authUrl = url.parse(body?.authServer)",
+											"if (",
+											"    authUrl.hostname.includes('cloud-nine-wallet') || ",
+											"    authUrl.hostname.includes('happy-life-bank')",
+											"){",
+											"    const port = authUrl.hostname.includes('cloud-nine-wallet') ",
+											"        ? authUrl.port",
+											"        : Number(authUrl.port) + 1000",
+											"    pm.environment.set(\"receiverOpenPaymentsAuthHost\", authUrl.protocol + '//localhost:' + port );",
+											"} else {",
+											"    pm.environment.set(\"receiverOpenPaymentsAuthHost\", body?.authServer);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{receiverWalletAddress}}",
+									"host": [
+										"{{receiverWalletAddress}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Wallet Address Keys",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Host",
+										"value": "happy-life-bank-backend"
+									}
+								],
+								"url": {
+									"raw": "{{receiverWalletAddress}}/jwks.json",
+									"host": [
+										"{{receiverWalletAddress}}"
+									],
+									"path": [
+										"jwks.json"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Incoming Payments",
+					"item": [
+						{
+							"name": "Create Incoming Payment",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"tomorrow\", (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString());",
+											"",
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"incomingPaymentId\", body.id.split(\"/\").pop());",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"walletAddress\": \"{{clientWalletAddress}}\",\n    \"incomingAmount\": {\n        \"value\": \"2000\",\n        \"assetCode\": \"USD\",\n        \"assetScale\": 2\n    },\n    \"expiresAt\": \"{{tomorrow}}\",\n    \"metadata\": {\n        \"description\": \"Incoming Payment on Own Account\",\n        \"externalRef\": \"INV-001\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{receiverOpenPaymentsHost}}/incoming-payments",
+									"host": [
+										"{{receiverOpenPaymentsHost}}"
+									],
+									"path": [
+										"incoming-payments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Incoming Payment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{receiverOpenPaymentsHost}}/incoming-payments/{{incomingPaymentId}}",
+									"host": [
+										"{{receiverOpenPaymentsHost}}"
+									],
+									"path": [
+										"incoming-payments",
+										"{{incomingPaymentId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Incoming Payment (Unauthenticated)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}",
+										"disabled": true
+									},
+									{
+										"key": "Host",
+										"value": "happy-life-bank-backend"
+									}
+								],
+								"url": {
+									"raw": "{{receiverOpenPaymentsHost}}/incoming-payments/{{incomingPaymentId}}",
+									"host": [
+										"{{receiverOpenPaymentsHost}}"
+									],
+									"path": [
+										"incoming-payments",
+										"{{incomingPaymentId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Incoming Payments",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"request.url = request.url",
+											"    .replace(/{{(receiverWalletAddress)}}/g, (_, key) => pm.environment.get(key))",
+											"    .replace(/http:\\/\\/localhost:([3,4])000/g, (_, key) =>",
+											"          key === '3'",
+											"            ? 'https://' + pm.environment.get('host3000')",
+											"            : 'https://' + pm.environment.get('host4000')",
+											"    )",
+											"console.log(request.url)",
+											"",
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))",
+											"",
+											"pm.request.url.query.idx(2).value = pm.request.url.query.idx(2).value",
+											"    .replace(/{{([A-Za-z]\\w+)}}/g, (_, key) => pm.environment.get(key))",
+											"    .replace(/http:\\/\\/localhost:([3,4])000/g, (_, key) =>",
+											"          key === '3'",
+											"            ? 'https://' + pm.environment.get('host3000')",
+											"            : 'https://' + pm.environment.get('host4000')",
+											"    )",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{receiverOpenPaymentsHost}}/incoming-payments?first=10&wallet-address={{receiverWalletAddress}}",
+									"host": [
+										"{{receiverOpenPaymentsHost}}"
+									],
+									"path": [
+										"incoming-payments"
+									],
+									"query": [
+										{
+											"key": "first",
+											"value": "10"
+										},
+										{
+											"key": "cursor",
+											"value": "ea3bf38f-2719-4473-a0f7-4ba967d1d81b",
+											"disabled": true
+										},
+										{
+											"key": "wallet-address",
+											"value": "{{receiverWalletAddress}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Complete Incoming Payment",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									},
+									{
+										"key": "Host",
+										"value": "happy-life-bank-backend",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{receiverOpenPaymentsHost}}/incoming-payments/{{incomingPaymentId}}/complete",
+									"host": [
+										"{{receiverOpenPaymentsHost}}"
+									],
+									"path": [
+										"incoming-payments",
+										"{{incomingPaymentId}}",
+										"complete"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Quotes",
+					"item": [
+						{
+							"name": "Create Quote",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"quoteId\", body.id.split(\"/\").pop());",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"receiver\": \"{{receiverOpenPaymentsHost}}/incoming-payments/{{incomingPaymentId}}\",\n    \"walletAddress\": \"{{senderWalletAddress}}\",\n    \"debitAmount\": {\n        \"value\": \"1000\",\n        \"assetCode\": \"{{receiverAssetCode}}\",\n        \"assetScale\": {{receiverAssetScale}}\n    },\n    \"method\": \"ilp\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/quotes",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"quotes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Quote",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									},
+									{
+										"key": "Host",
+										"value": "cloud-nine-wallet-backend",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/quotes/{{quoteId}}",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"quotes",
+										"{{quoteId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Outgoing Payments",
+					"item": [
+						{
+							"name": "Create Outgoing Payment",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"outgoingPaymentId\", body.id.split(\"/\").pop());",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"walletAddress\": {{senderWalletAddress}},\n    \"quoteId\": \"{{senderOpenPaymentsHost}}/quotes/{{quoteId}}\",\n    \"metadata\": {\n        \"description\": \"yolo\",\n        \"externalRef\": \"INV-001\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/outgoing-payments",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"outgoing-payments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Outgoing Payment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/outgoing-payments/{{outgoingPaymentId}}",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"outgoing-payments",
+										"{{outgoingPaymentId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Outgoing Payments",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"request.url = request.url",
+											"    .replace(/{{(senderWalletAddress)}}/g, (_, key) => pm.environment.get(key))",
+											"    .replace(/http:\\/\\/localhost:([3,4])000/g, (_, key) =>",
+											"          key === '3'",
+											"            ? 'https://' + pm.environment.get('host3000')",
+											"            : 'https://' + pm.environment.get('host4000')",
+											"    )",
+											"console.log(request.url)",
+											"",
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))",
+											"",
+											"pm.request.url.query.idx(2).value = pm.request.url.query.idx(2).value",
+											"    .replace(/{{([A-Za-z]\\w+)}}/g, (_, key) => pm.environment.get(key))",
+											"    .replace(/http:\\/\\/localhost:([3,4])000/g, (_, key) =>",
+											"          key === '3'",
+											"            ? 'https://' + pm.environment.get('host3000')",
+											"            : 'https://' + pm.environment.get('host4000')",
+											"    )",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/outgoing-payments?first=2&wallet-address={{senderWalletAddress}}",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"outgoing-payments"
+									],
+									"query": [
+										{
+											"key": "first",
+											"value": "2"
+										},
+										{
+											"key": "cursor",
+											"value": "ea3bf38f-2719-4473-a0f7-4ba967d1d81b",
+											"disabled": true
+										},
+										{
+											"key": "wallet-address",
+											"value": "{{senderWalletAddress}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Open Payments Auth APIs",
+			"item": [
+				{
+					"name": "Grants",
+					"item": [
+						{
+							"name": "Grant Request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const body = pm.response.json();",
+											"pm.environment.set(\"accessToken\", body?.access_token?.value);",
+											"pm.environment.set(\"continueToken\", body.continue.access_token.value);",
+											"pm.environment.set(\"continueId\", body.continue.uri.split(\"/\").pop());",
+											"pm.environment.set(\"tokenId\", body.access_token.manage.split('/').pop())"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"access_token\": {\n        \"access\": [\n            {\n                \"type\": \"quote\",\n                \"actions\": [\n                    \"create\", \"read\"\n                ]\n            },\n            {\n                \"type\": \"outgoing-payment\",\n                \"actions\": [\n                    \"create\", \"read\", \"list\"\n                ],\n                \"identifier\": \"{{senderWalletAddress}}\",\n                \"limits\": {\n                    \"debitAmount\": {\n                        \"value\": \"8000\",\n                        \"assetCode\": \"USD\",\n                        \"assetScale\": 2\n                    },\n                    \"receiveAmount\": {\n                        \"value\": \"8000\",\n                        \"assetCode\": \"USD\",\n                        \"assetScale\": 2\n                    }\n                }\n            }\n        ]\n    },\n    \"client\": \"{{clientWalletAddress}}\",\n    \"interact\": {\n        \"start\": [\n            \"redirect\"\n        ],\n        \"finish\": {\n            \"method\": \"redirect\",\n            \"uri\": \"http://localhost:3030/mock-idp/fake-client\",\n            \"nonce\": \"123\"\n        }\n    }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{receiverOpenPaymentsAuthHost}}/",
+									"host": [
+										"{{receiverOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Continuation Request",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const body = pm.response.json();",
+											"pm.environment.set(\"accessToken\", body.access_token.value);",
+											"pm.environment.set(\"tokenId\", body.access_token.manage.split('/').pop())"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{continueToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"interact_ref\": \"fdfa9202-3e68-4c2a-8049-25135704a1cb\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{receiverOpenPaymentsAuthHost}}/continue/{{continueId}}",
+									"host": [
+										"{{receiverOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										"continue",
+										"{{continueId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Tokens",
+					"item": [
+						{
+							"name": "Rotate Access Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const body = pm.response.json();",
+											"pm.environment.set(\"accessToken\", body.access_token.value);",
+											"pm.environment.set(\"tokenId\", body.access_token.manage.split('/').pop())"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{receiverOpenPaymentsAuthHost}}/token/{{tokenId}}",
+									"host": [
+										"{{receiverOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										"token",
+										"{{tokenId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Revoke Access Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{receiverOpenPaymentsAuthHost}}/token/{{tokenId}}",
+									"host": [
+										"{{receiverOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										"token",
+										"{{tokenId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Examples",
+			"item": [
+				{
+					"name": "Open Payments",
+					"item": [
+						{
+							"name": "Get sender wallet address",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const url = require('url')",
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"senderAssetCode\", body?.assetCode)",
+											"pm.environment.set(\"senderAssetScale\", body?.assetScale)",
+											"",
+											"const authUrl = url.parse(body?.authServer)",
+											"if (",
+											"    authUrl.hostname.includes('cloud-nine-wallet') || ",
+											"    authUrl.hostname.includes('happy-life-bank')",
+											"){",
+											"    const port = authUrl.hostname.includes('cloud-nine-wallet') ",
+											"        ? authUrl.port",
+											"        : Number(authUrl.port) + 1000",
+											"    pm.environment.set(\"senderOpenPaymentsAuthHost\", authUrl.protocol + '//localhost:' + port );",
+											"} else {",
+											"    pm.environment.set(\"senderOpenPaymentsAuthHost\", body?.authServer);",
+											"}",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const url = require('url')",
+											"",
+											"const requestUrl = url.parse(request.url",
+											"  .replace(/{{([A-Za-z]\\w+)}}/g, (_, key) => pm.environment.get(key)))",
+											"",
+											"pm.environment.set(\"senderOpenPaymentsHost\", requestUrl.protocol + '//' + requestUrl.host);",
+											"",
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{senderWalletAddress}}",
+									"host": [
+										"{{senderWalletAddress}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get receiver wallet address",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const url = require('url')",
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"receiverAssetCode\", body?.assetCode)",
+											"pm.environment.set(\"receiverAssetScale\", body?.assetScale)",
+											"",
+											"const authUrl = url.parse(body?.authServer)",
+											"if (",
+											"    authUrl.hostname.includes('cloud-nine-wallet') || ",
+											"    authUrl.hostname.includes('happy-life-bank')",
+											"){",
+											"    const port = authUrl.hostname.includes('cloud-nine-wallet') ",
+											"        ? authUrl.port",
+											"        : Number(authUrl.port) + 1000",
+											"    pm.environment.set(\"receiverOpenPaymentsAuthHost\", authUrl.protocol + '//localhost:' + port );",
+											"} else {",
+											"    pm.environment.set(\"receiverOpenPaymentsAuthHost\", body?.authServer);",
+											"}",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const url = require('url')",
+											"",
+											"const requestUrl = url.parse(request.url",
+											"  .replace(/{{([A-Za-z]\\w+)}}/g, (_, key) => pm.environment.get(key)))",
+											"",
+											"pm.environment.set(\"receiverOpenPaymentsHost\", requestUrl.protocol + '//' + requestUrl.host);",
+											"",
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{receiverWalletAddress}}",
+									"host": [
+										"{{receiverWalletAddress}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grant Request Incoming Payment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const body = pm.response.json();",
+											"pm.environment.set(\"accessToken\", body?.access_token?.value);",
+											"pm.environment.set(\"continueToken\", body.continue.access_token.value);",
+											"pm.environment.set(\"continueId\", body.continue.uri.split(\"/\").pop());",
+											"pm.environment.set(\"tokenId\", body.access_token.manage.split('/').pop())"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"access_token\": {\n        \"access\": [\n            {\n                \"type\": \"incoming-payment\",\n                \"actions\": [\n                    \"create\", \"read\", \"list\", \"complete\"\n                ]\n            }\n        ]\n    },\n    \"client\": \"{{clientWalletAddress}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{receiverOpenPaymentsAuthHost}}/",
+									"host": [
+										"{{receiverOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Incoming Payment",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"tomorrow\", (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString());",
+											"",
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"incomingPaymentId\", body.id.split(\"/\").pop());",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"walletAddress\": \"{{receiverWalletAddress}}\",\n    \"incomingAmount\": {\n        \"value\": \"100\",\n        \"assetCode\": \"{{receiverAssetCode}}\",\n        \"assetScale\": {{receiverAssetScale}}\n    },\n    \"expiresAt\": \"{{tomorrow}}\",\n    \"metadata\": {\n        \"description\": \"Free Money!\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{receiverOpenPaymentsHost}}/incoming-payments",
+									"host": [
+										"{{receiverOpenPaymentsHost}}"
+									],
+									"path": [
+										"incoming-payments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grant Request Quote",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const body = pm.response.json();",
+											"pm.environment.set(\"accessToken\", body?.access_token?.value);",
+											"pm.environment.set(\"continueToken\", body.continue.access_token.value);",
+											"pm.environment.set(\"continueId\", body.continue.uri.split(\"/\").pop());",
+											"pm.environment.set(\"tokenId\", body.access_token.manage.split('/').pop())"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"access_token\": {\n        \"access\": [\n            {\n                \"type\": \"quote\",\n                \"actions\": [\n                    \"create\", \"read\"\n                ]\n            }\n        ]\n    },\n    \"client\": \"{{clientWalletAddress}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{senderOpenPaymentsAuthHost}}/",
+									"host": [
+										"{{senderOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Quote",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"quoteId\", body.id.split(\"/\").pop());",
+											"pm.environment.set(\"quoteDebitAmount\", JSON.stringify(body.debitAmount))",
+											"pm.environment.set(\"quoteReceiveAmount\", JSON.stringify(body.receiveAmount))",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"walletAddress\": \"{{senderWalletAddress}}\",\n    \"receiver\": \"{{receiverOpenPaymentsHost}}/incoming-payments/{{incomingPaymentId}}\",\n    \"method\": \"ilp\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/quotes",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"quotes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grant Request Outgoing Payment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const body = pm.response.json();",
+											"pm.environment.set(\"accessToken\", body?.access_token?.value);",
+											"pm.environment.set(\"continueToken\", body.continue.access_token.value);",
+											"pm.environment.set(\"continueId\", body.continue.uri.split(\"/\").pop());",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"access_token\": {\n        \"access\": [\n            {\n                \"type\": \"outgoing-payment\",\n                \"actions\": [\n                    \"create\", \"read\", \"list\"\n                ],\n                \"identifier\": \"{{senderWalletAddress}}\",\n                \"limits\": {\n                    \"debitAmount\": {{quoteDebitAmount}},\n                    \"receiveAmount\": {{quoteReceiveAmount}}\n                }\n            }\n        ]\n    },\n    \"client\": \"{{clientWalletAddress}}\",\n    \"interact\": {\n        \"start\": [\n            \"redirect\"\n        ],\n        \"finish\": {\n            \"method\": \"redirect\",\n            \"uri\": \"https://example.com\",\n            \"nonce\": \"456\"\n        }\n    }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{senderOpenPaymentsAuthHost}}/",
+									"host": [
+										"{{senderOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Continuation Request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const body = pm.response.json();",
+											"pm.environment.set(\"accessToken\", body.access_token.value);",
+											"pm.environment.set(\"tokenId\", body.access_token.manage.split('/').pop())"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{continueToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"interact_ref\": \"6d519566-234f-4c2e-b56f-6d4a305fc067\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{senderOpenPaymentsAuthHost}}/continue/{{continueId}}",
+									"host": [
+										"{{senderOpenPaymentsAuthHost}}"
+									],
+									"path": [
+										"continue",
+										"{{continueId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Outgoing Payment",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"const body = pm.response.json();",
+											"pm.environment.set(\"outgoingPaymentId\", body.id.split(\"/\").pop());",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"walletAddress\": \"{{senderWalletAddress}}\",\n    \"quoteId\": \"{{senderWalletAddress}}/quotes/{{quoteId}}\",\n    \"metadata\": {\n        \"description\": \"Free Money!\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/outgoing-payments",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"outgoing-payments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Outgoing Payment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"if(pm.environment.get('preRequestHost')){",
+											"    eval(pm.environment.get('preRequestHost'))",
+											"}",
+											"eval(pm.environment.get('preRequestSignatures'))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "GNAP {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{senderOpenPaymentsHost}}/outgoing-payments/{{outgoingPaymentId}}",
+									"host": [
+										"{{senderOpenPaymentsHost}}"
+									],
+									"path": [
+										"outgoing-payments",
+										"{{outgoingPaymentId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Admin API -  only locally",
+					"item": [
+						{
+							"name": "Peer-to-Peer Payment",
+							"item": [
+								{
+									"name": "Create Receiver (remote Incoming Payment)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const body = pm.response.json();",
+													"",
+													"pm.environment.set(\"receiverId\", body.data.createReceiver.receiver.id);",
+													"pm.expect(pm.environment.get(\"receiverId\")).to.be.a('string');"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation CreateReceiver($input: CreateReceiverInput!) {\n  createReceiver(input: $input) {\n    code\n    message\n    receiver {\n      completed\n      createdAt\n      expiresAt\n      metadata\n      id\n      incomingAmount {\n        assetCode\n        assetScale\n        value\n      }\n      walletAddressUrl\n      receivedAmount {\n        assetCode\n        assetScale\n        value\n      }\n      updatedAt\n    }\n    success\n  }\n}",
+												"variables": "{\n  \"input\": {\n    \"metadata\": {\n        \"description\": \"For lunch!\"\n    },\n    \"incomingAmount\": {\n      \"assetCode\": \"USD\",\n      \"assetScale\": 2,\n      \"value\": 500\n    },\n    \"walletAddressUrl\": \"https://happy-life-bank-backend/accounts/pfry\"\n  }\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Quote",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const body = pm.response.json();",
+													"",
+													"pm.environment.set(\"quoteId\", body.data.createQuote.quote.id);",
+													"pm.expect(pm.environment.get(\"quoteId\")).to.be.a('string');"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"",
+													"const getWalletAddressesQuery = `",
+													"query GetWalletAddresses {",
+													"    walletAddresses {",
+													"        edges {",
+													"            cursor",
+													"            node {",
+													"                id",
+													"                publicName",
+													"                url",
+													"            }",
+													"        }",
+													"    }",
+													"}`",
+													"",
+													"const postRequest = {",
+													"  url: `${pm.environment.get(\"RafikiGraphqlHost\")}/graphql`,",
+													"  method: 'POST',",
+													"  body: {",
+													"    mode: 'graphql',",
+													"    graphql: {",
+													"        query:getWalletAddressesQuery",
+													"    }",
+													"  }",
+													"};",
+													"",
+													"",
+													"pm.sendRequest(postRequest, (error, response) => {",
+													"    const body = response.json();",
+													"    const gfranklinWalletAddressId = body.data.walletAddresses.edges.map(e => e.node).find(node => node.publicName === 'Grace Franklin')?.id",
+													"",
+													"    pm.environment.set(\"gfranklinWalletAddressId\", gfranklinWalletAddressId)",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation CreateQuote($input: CreateQuoteInput!) {\n  createQuote(input: $input) {\n    code\n    message\n    quote {\n      createdAt\n      expiresAt\n      highEstimatedExchangeRate\n      id\n      lowEstimatedExchangeRate\n      maxPacketAmount\n      minExchangeRate\n      walletAddressId\n      receiveAmount {\n        assetCode\n        assetScale\n        value\n      }\n      receiver\n      debitAmount {\n        assetCode\n        assetScale\n        value\n      }\n    }\n  }\n}",
+												"variables": "{\n  \"input\": {\n    \"walletAddressId\": \"{{gfranklinWalletAddressId}}\",\n    \"receiver\": \"{{receiverId}}\"\n  }\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Outgoing Payment",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const body = pm.response.json();",
+													"",
+													"pm.environment.set(\"outgoingPaymentId\", body.data.createOutgoingPayment.payment.id);",
+													"pm.expect(pm.environment.get(\"outgoingPaymentId\")).to.be.a('string');"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation CreateOutgoingPayment($input: CreateOutgoingPaymentInput!) {\n  createOutgoingPayment(input: $input) {\n    code\n    message\n    payment {\n      createdAt\n      error\n      metadata\n      id\n      walletAddressId\n      receiveAmount {\n        assetCode\n        assetScale\n        value\n      }\n      receiver\n      debitAmount {\n        assetCode\n        assetScale\n        value\n      }\n      sentAmount {\n        assetCode\n        assetScale\n        value\n      }\n      state\n      stateAttempts\n    }\n    success\n  }\n}",
+												"variables": "{\n  \"input\": {\n    \"walletAddressId\": \"{{gfranklinWalletAddressId}}\",\n    \"quoteId\": \"{{quoteId}}\"\n  }\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Outgoing Payment",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "query GetOutgoingPayment($id: String!) {\noutgoingPayment(id: $id) {\n    createdAt\n    error\n    metadata\n    id\n    walletAddressId\n    quote {\n      id\n    }\n    receiveAmount {\n      assetCode\n      assetScale\n      value\n    }\n    receiver\n    debitAmount {\n      assetCode\n      assetScale\n      value\n    }\n    sentAmount {\n      assetCode\n      assetScale\n      value\n    }\n    state\n    stateAttempts\n  }\n}",
+												"variables": "{\n    \"id\": \"{{outgoingPaymentId}}\"\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Peer-to-Peer Cross Currency Payment",
+							"item": [
+								{
+									"name": "Create Receiver (remote Incoming Payment)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const body = pm.response.json();",
+													"",
+													"pm.environment.set(\"receiverId\", body.data.createReceiver.receiver.id);",
+													"pm.expect(pm.environment.get(\"receiverId\")).to.be.a('string');"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation CreateReceiver($input: CreateReceiverInput!) {\n  createReceiver(input: $input) {\n    code\n    message\n    receiver {\n      completed\n      createdAt\n      expiresAt\n      metadata\n      id\n      incomingAmount {\n        assetCode\n        assetScale\n        value\n      }\n      walletAddressUrl\n      receivedAmount {\n        assetCode\n        assetScale\n        value\n      }\n      updatedAt\n    }\n    success\n  }\n}",
+												"variables": "{\n  \"input\": {\n    \"metadata\": {\n        \"description\": \"cross-currency\"\n    },\n    \"incomingAmount\": {\n      \"assetCode\": \"EUR\",\n      \"assetScale\": 2,\n      \"value\": 500\n    },\n    \"walletAddressUrl\": \"https://happy-life-bank-backend/accounts/lars\"\n  }\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Quote",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const body = pm.response.json();",
+													"",
+													"pm.environment.set(\"quoteId\", body.data.createQuote.quote.id);",
+													"pm.expect(pm.environment.get(\"quoteId\")).to.be.a('string');"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"",
+													"const getWalletAddressesQuery = `",
+													"query GetWalletAddresses {",
+													"    walletAddresses {",
+													"        edges {",
+													"            cursor",
+													"            node {",
+													"                id",
+													"                publicName",
+													"                url",
+													"            }",
+													"        }",
+													"    }",
+													"}`",
+													"",
+													"const postRequest = {",
+													"  url: `${pm.environment.get(\"RafikiGraphqlHost\")}/graphql`,",
+													"  method: 'POST',",
+													"  body: {",
+													"    mode: 'graphql',",
+													"    graphql: {",
+													"        query:getWalletAddressesQuery",
+													"    }",
+													"  }",
+													"};",
+													"",
+													"",
+													"pm.sendRequest(postRequest, (error, response) => {",
+													"    const body = response.json();",
+													"    const gfranklinWalletAddressId = body.data.walletAddresses.edges.map(e => e.node).find(node => node.publicName === 'Grace Franklin')?.id",
+													"",
+													"    pm.environment.set(\"gfranklinWalletAddressId\", gfranklinWalletAddressId)",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation CreateQuote($input: CreateQuoteInput!) {\n  createQuote(input: $input) {\n    code\n    message\n    quote {\n      createdAt\n      expiresAt\n      highEstimatedExchangeRate\n      id\n      lowEstimatedExchangeRate\n      maxPacketAmount\n      minExchangeRate\n      walletAddressId\n      receiveAmount {\n        assetCode\n        assetScale\n        value\n      }\n      receiver\n      debitAmount {\n        assetCode\n        assetScale\n        value\n      }\n    }\n  }\n}",
+												"variables": "{\n  \"input\": {\n    \"walletAddressId\": \"{{gfranklinWalletAddressId}}\",\n    \"receiver\": \"{{receiverId}}\"\n  }\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Outgoing Payment",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const body = pm.response.json();",
+													"",
+													"pm.environment.set(\"outgoingPaymentId\", body.data.createOutgoingPayment.payment.id);",
+													"pm.expect(pm.environment.get(\"outgoingPaymentId\")).to.be.a('string');"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation CreateOutgoingPayment($input: CreateOutgoingPaymentInput!) {\n  createOutgoingPayment(input: $input) {\n    code\n    message\n    payment {\n      createdAt\n      error\n      metadata\n      id\n      walletAddressId\n      receiveAmount {\n        assetCode\n        assetScale\n        value\n      }\n      receiver\n      debitAmount {\n        assetCode\n        assetScale\n        value\n      }\n      sentAmount {\n        assetCode\n        assetScale\n        value\n      }\n      state\n      stateAttempts\n    }\n    success\n  }\n}",
+												"variables": "{\n  \"input\": {\n    \"walletAddressId\": \"{{gfranklinWalletAddressId}}\",\n    \"quoteId\": \"{{quoteId}}\"\n  }\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Outgoing Payment",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "query GetOutgoingPayment($id: String!) {\noutgoingPayment(id: $id) {\n    createdAt\n    error\n    metadata\n    id\n    walletAddressId\n    quote {\n      id\n    }\n    receiveAmount {\n      assetCode\n      assetScale\n      value\n    }\n    receiver\n    debitAmount {\n      assetCode\n      assetScale\n      value\n    }\n    sentAmount {\n      assetCode\n      assetScale\n      value\n    }\n    state\n    stateAttempts\n  }\n}",
+												"variables": "{\n    \"id\": \"{{outgoingPaymentId}}\"\n}"
+											}
+										},
+										"url": {
+											"raw": "{{RafikiGraphqlHost}}/graphql",
+											"host": [
+												"{{RafikiGraphqlHost}}"
+											],
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
