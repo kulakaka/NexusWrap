@@ -1,7 +1,11 @@
 // app.js
+
+
+
 document.getElementById('paymentButton').addEventListener('click', async () => {
     const destinationAddress = 'RECIPIENT_XRP_ADDRESS'; // Replace with the recipient's XRP address
     const amountToSend = '1'; // The amount of XRP to send
+
 
     fetch('/sendPayment', {
         method: 'POST',
@@ -11,6 +15,7 @@ document.getElementById('paymentButton').addEventListener('click', async () => {
         body: JSON.stringify({
             destinationAddress,
             amount: amountToSend
+            
         })
     })
     .then(response => response.json())
@@ -25,3 +30,5 @@ document.getElementById('paymentButton').addEventListener('click', async () => {
         console.error('Error submitting payment:', error);
     });
 });
+
+

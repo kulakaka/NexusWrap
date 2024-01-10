@@ -15,6 +15,7 @@
     "express": "^4.18.2",
     "javascript-lp-solver": "^0.4.24",
     "ripple-lib": "^1.10.1",
-    "web3": "^4.3.0"
+    "web3": "^4.3.0",
+    "xrpl": "^2.14.0"
   }
 }

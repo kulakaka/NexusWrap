@@ -1,4 +1,6 @@
 // server.js
+const xrpl = require('xrpl')
+
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -10,6 +12,17 @@ app.use(bodyParser.json());
 const api = new RippleAPI({
     server: 'wss://s1.ripple.com' // Public rippled server hosted by Ripple
 });
+
+app.post('/creatWallet', async (req, res) => {
+    
+    const fund_result = await client.fund_Wallet();
+})
+
+app.post('/connectWallet', async (req, res) => {
+    
+
+})
+
 
 app.post('/sendPayment', async (req, res) => {
     const { destinationAddress, amount } = req.body;
@@ -51,6 +64,22 @@ app.post('/sendPayment', async (req, res) => {
     }
 });
 
+
+async function getAccount(){
+    
+    const test_wallet = xrpl.Wallet.generate()
+}
+
+async function connecXRPL(){
+// Define the network client
+const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233")
+await client.connect()
+
+await client.disconnect()
+
+}
+
+connecXRPL()
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
