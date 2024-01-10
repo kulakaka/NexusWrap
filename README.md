@@ -1,109 +1,55 @@
-# Rafiki
+# RAIO backend api
 
-![Rafiki](https://github.com/interledger/rafiki/assets/20246798/528b1978-0e02-4bc4-a6b4-e8e81d2f3c3a)
-
-## What is Rafiki?
-
-Rafiki is open source software that allows an [Account Servicing Entity](https://rafiki.dev/concepts/account-servicing-entity/) to enable [Interledger](https://rafiki.dev/concepts/interledger-protocol/overview/) functionality on its users' accounts.
-
-This includes
-
-- sending and receiving payments (via [SPSP](https://rafiki.dev/reference/glossary/#simple-payments-setup-protocol-spsp) and [Open Payments](https://rafiki.dev/concepts/open-payments/overview/))
-- allowing third-party access to initiate payments and view transaction data (via [Open Payments](https://rafiki.dev/concepts/open-payments/overview/))
-
-**❗ Rafiki is intended to be run by [Account Servicing Entities](https://rafiki.dev/reference/glossary/#account-servicing-entity) only and should not be used in production by non-regulated entities.**
-
-Rafiki is made up of several components, including an Interledger connector, a high-throughput accounting database called [TigerBeetle](https://rafiki.dev/concepts/accounting/tigerbeetle/), and several APIs:
-
-- the [Admin API](https://rafiki.dev/apis/backend/schema/) to create [peering relationships](https://rafiki.dev/concepts/interledger-protocol/peering/), add supported [assets](https://rafiki.dev/concepts/asset/), and issue [wallet addresses](https://rafiki.dev/reference/glossary/#wallet-address)
-- the [Open Payments](https://rafiki.dev/reference/glossary/#open-payments) API to allow third parties (with the account holder's consent) to initiate payments and to view the transaction history
-- the [SPSP](https://rafiki.dev/reference/glossary/#simple-payments-setup-protocol-spsp) API for simple Interledger Payments
-
-Additionally, this package also includes a reference implementation of a [GNAP](https://rafiki.dev/reference/glossary/#grant-negotiation-authorization-protocol) authorization server, which handles the access control for the [Open Payments](https://rafiki.dev/reference/glossary/#open-payments) API. For more information on the architecture, check out the [Architecture documentation](https://rafiki.dev/introduction/architecture/).
-
-### New to Interledger?
-
-Never heard of Interledger before? Or would you like to learn more? Here are some excellent places to start:
-
-- [Interledger Website](https://interledger.org/)
-- [Interledger Specs](https://interledger.org/rfcs/0027-interledger-protocol-4/)
-- [Interledger Explainer Video](https://twitter.com/Interledger/status/1567916000074678272)
-- [Open Payments](https://openpayments.guide/)
-- [Web monetization](https://webmonetization.org/)
-
-## Contributing
-
-Please read the [contribution guidelines](.github/contributing.md) before submitting contributions. All contributions must adhere to our [code of conduct](.github/code_of_conduct.md).
-
-## Planning Calls
-
-Our planning calls are open to our community. We have them every Tuesday at 14:30 GMT, via Google Meet.
-
-**Google Meet joining info**
-
-Video call link: https://meet.google.com/sms-fwny-ezc
-
-Or dial: ‪(GB) +44 20 3956 0467‬ PIN: ‪140 111 239‬#
-
-More phone numbers: https://tel.meet/sms-fwny-ezc?pin=5321780226087
-
-[Add to Google Calendar](https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=YjN1NW5ibDloN2dua2IwM2thOWlrZXRvMTVfMjAyMzA0MTdUMTUwMDAwWiBjX2NqMDI3Z21oc3VqazkxZXZpMjRkOXB2bXQ0QGc&tmsrc=c_cj027gmhsujk91evi24d9pvmt4%40group.calendar.google.com&scp=ALL)
-
-## Local Development Environment
+## Local Development
 
 ### Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [NVM](https://github.com/nvm-sh/nvm)
+- [Docker](https://docs.docker.com/engine/install/) configured to [run as non-root user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)
+- If you are running MacOS, there is a known [issue](https://github.com/coilhq/tigerbeetle/issues/92). [TigerBeetle](https://github.com/coilhq/tigerbeetle) requires the privilege of using memlock functions, usually afforded by adding the linux capability (IPC_LOCK). Rafiki uses [testcontainers](https://github.com/testcontainers/testcontainers-node) which unfortunately provides no api to configure the containers for this use case. On MacOS, a workaround is update the defaults in `$HOME/.docker/daemon.json` with
 
-### Environment Setup
+  ```
+  "default-ulimits": {
+    "memlock": {
+      "Hard": -1,
+      "Name": "memlock",
+      "Soft": -1
+    }
+  },
+  ```
 
-```sh
-# install node 18
-nvm install lts/hydrogen
-nvm use lts/hydrogen
+  and then restart docker.
 
-# install pnpm
-corepack enable
+### Testing
 
-# if moving from yarn run
-pnpm clean
+From the monorepo root directory:
 
-# install dependencies
-pnpm i
-```
-
-### Local Development
-
-The Rafiki local environment is the best way to explore Rafiki locally. The [localenv](localenv) directory contains instructions for setting up a local playground. Please refer to the README for each individual package for more details.
-
-### Useful commands
-
-```sh
-# build all the packages in the repo:
-pnpm -r build
-
-# build specific package (e.g. backend):
-pnpm --filter backend build
-
-# generate types from specific package GraphQL schema:
-pnpm --filter backend generate
-
-# run individual tests (e.g. backend)
+```shell
 pnpm --filter backend test
-
-# run all tests
-pnpm -r --workspace-concurrency=1 test
-
-# format and lint code:
-pnpm format
-
-# check lint and formatting
-pnpm checks
-
-# verify code formatting:
-pnpm check:prettier
-
-# verify lint
-pnpm check:lint
 ```
+
+## Docker build
+
+In order to build the docker container run the following command.
+
+```shell
+# from the root:
+docker build -f packages/backend/Dockerfile -t rafiki-backend .
+```
+
+## Configuration
+
+### Redis Connection
+
+The connection can be configured by specifying the following environment variables.
+The config is passed to `ioredis` - see https://github.com/luin/ioredis#tls-options.
+
+| Variable                 | Description                                        | Default                  |
+| ------------------------ | -------------------------------------------------- | ------------------------ |
+| REDIS_URL                | Redis connection string.                           | "redis://127.0.0.1:6379" |
+| REDIS_TLS_CA_FILE_PATH   | Path to CA certificate - overrides well-known CAs. | ""                       |
+| REDIS_TLS_KEY_FILE_PATH  | Path to private key for client authentication.     | ""                       |
+| REDIS_TLS_CERT_FILE_PATH | Path to certificate for client authentication.     | ""                       |
+
+### Design
+
+[![](https://mermaid.ink/img/pako:eNqNVD1vwjAQ_SuRBxQkUHcGpCI6dGqqMrXpYJIjWE1sap8HhPjv9Uccx1GQypCc77179-ELN1KJGsiGNJJeztlhX_LM_JQ-eseRVj_Aa-995ZXoGG_yYBT02gHHpYffNDbCwsFI4XctEHL37D09XhgugszTY895riqhOVrZaAZMKcDcPYMiWB2YRqv97iuEq-W3xw6ScnUC6cDhEFCn6sKsMbjTGi2eegZiGJGlTMY1cMKcLGcys4Hj5mUJzoh1QJ8dZnJm6_V2VMAMmBadVuMILtuogodREe0rnRGLfcbivaDrYm6y2cLfgHkPUovYwyJoZC371axmeM2ov18nHFdldJuWbl7Ygk30kD9bjiNZkelWWtFCKGwkqKcDa0DuAEyKsawKPf4zbLSZD4uZLmLa5zbsr3ebL5isSAeyo6w2H_vNukuCZzOJkmyMWcOJ6hZLUvK7oepLTRFezFyFJBuUGlaEahQfV16Fs-fsGTX_FF1wXij_FMIcT7RVcP8DQHN1Og?type=png)](https://mermaid-js.github.io/mermaid-live-editor/edit#pako:eNqNVD1vwjAQ_SuRBxQkUHcGpCI6dGqqMrXpYJIjWE1sap8HhPjv9Uccx1GQypCc77179-ELN1KJGsiGNJJeztlhX_LM_JQ-eseRVj_Aa-995ZXoGG_yYBT02gHHpYffNDbCwsFI4XctEHL37D09XhgugszTY895riqhOVrZaAZMKcDcPYMiWB2YRqv97iuEq-W3xw6ScnUC6cDhEFCn6sKsMbjTGi2eegZiGJGlTMY1cMKcLGcys4Hj5mUJzoh1QJ8dZnJm6_V2VMAMmBadVuMILtuogodREe0rnRGLfcbivaDrYm6y2cLfgHkPUovYwyJoZC371axmeM2ov18nHFdldJuWbl7Ygk30kD9bjiNZkelWWtFCKGwkqKcDa0DuAEyKsawKPf4zbLSZD4uZLmLa5zbsr3ebL5isSAeyo6w2H_vNukuCZzOJkmyMWcOJ6hZLUvK7oepLTRFezFyFJBuUGlaEahQfV16Fs-fsGTX_FF1wXij_FMIcT7RVcP8DQHN1Og)
